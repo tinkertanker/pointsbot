@@ -2,6 +2,9 @@ import os
 
 import pointsbot
 import dotenv
+import os
+
+from pointsbot.database import SqliteEngine
 
 
 def main():
@@ -9,7 +12,9 @@ def main():
     if not os.getenv('DISCORD_TOKEN'):
         print("Can't run without a discord token!")
         exit(1)
-    bot = pointsbot.PointsBot()
+    db_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "pointsbot.sqlite"))
+    sqlite_engine = SqliteEngine(db_file)
+    bot = pointsbot.PointsBot(sqlite_engine)
     bot.run(os.getenv('DISCORD_TOKEN'))
 
 
