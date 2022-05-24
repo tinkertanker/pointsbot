@@ -41,15 +41,20 @@ class Points(commands.Cog):
         await ctx.respond(fmt_pts(user.mention, points))
 
     @points.command(name="top", description="Retrieves the top 10 users with the most points")
-    async def points_leaderboard(self, ctx: discord.ApplicationContext):
+    async def points_leaderboard(self, ctx: discord.ApplicationContext,
+                                 num_users: discord.Option(discord.SlashCommandOptionType.integer,
+                                                           "The number of users to retrieve", default=10)):
         """
-        Retrieves the top 10 users with the most points
-        :param ctx:
+        Retrieves the top N users with the most points
+        :param num_users: The number of users to retrieve
+        :param ctx: The application context
         :return:
         """
-        top_users = fetch_top_n_users(ctx.guild, self.bot.db)
+        if num_users < 1:
+            await ctx.respond("Nope. That's LITERALLY impossible.", ephemeral=True)
+        top_users = fetch_top_n_users(ctx.guild, self.bot.db, num_users)
         if not top_users:
-            await ctx.respond("There are no users with points.")
+            await ctx.respond("There are no users with points.", ephemeral=True)
             return
         await ctx.respond("Leaderboard computed", embed=gen_leaderboard_embed(top_users))
 
