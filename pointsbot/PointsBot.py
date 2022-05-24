@@ -43,4 +43,5 @@ class PointsBot(discord.Bot):
         self.logger.info("Logger is now ready.")
 
     async def on_ready(self):
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands"))
         print(f'Logged on as {self.user}!')
