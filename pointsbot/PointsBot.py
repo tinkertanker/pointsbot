@@ -1,6 +1,7 @@
 # noinspection PyPackageRequirements
 import logging
 
+# noinspection PyPackageRequirements
 import discord
 
 from pointsbot.database import SqliteEngine
@@ -8,7 +9,11 @@ from pointsbot.database import SqliteEngine
 
 class PointsBot(discord.Bot):
     def __init__(self, database_engine: SqliteEngine, *args, **options):
-        super().__init__(debug_guilds=[976345115826212884], *args, **options)
+        intents = discord.Intents.default()
+        # noinspection PyDunderSlots,PyUnresolvedReferences
+        intents.members = True
+
+        super().__init__(debug_guilds=[976345115826212884], intents=intents, *args, **options)
 
         self._setup_database(database_engine)
         self._setup_logging()

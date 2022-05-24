@@ -1,9 +1,11 @@
+# noinspection PyPackageRequirements
 import discord
+# noinspection PyPackageRequirements
 from discord.ext import commands
 
 from pointsbot import PointsBot
 from pointsbot.commands import fmt_pts
-from pointsbot.database import fetch_points, update_usr_points
+from pointsbot.database import update_usr_points
 
 
 class PointsAdmin(commands.Cog):
@@ -62,7 +64,7 @@ class PointsAdmin(commands.Cog):
                      points: discord.Option(discord.SlashCommandOptionType.integer,
                                             "The number of points to spread")):
 
-        the_role = ctx.guild.get_role(role.id)
+        the_role: discord.Role = role
         if the_role is None:
             await ctx.respond("That role doesn't exist!")
             return
@@ -79,7 +81,7 @@ class PointsAdmin(commands.Cog):
         for member in the_role.members:
             update_usr_points(member, pts_per_usr, self.bot.db)
         await ctx.respond(f"Evenly distributed {points} points to {len(the_role.members)} users in {the_role.mention} "
-                          f"(each user has received: {pts_per_usr} points)")
+                          f"(each user has received: {pts_per_usr:.2f} points)")
 
 
 def setup(bot: PointsBot):

@@ -1,6 +1,6 @@
-import numbers
 from typing import Optional, Union
 
+# noinspection PyPackageRequirements
 import discord
 
 from .sqlite_engine import SqliteEngine
@@ -26,7 +26,8 @@ def fetch_points(usr: [discord.User, discord.Member], engine: SqliteEngine) -> U
     return results[0]
 
 
-def update_usr_points(usr: Union[discord.User, discord.Member], update_val: Union[int, float], engine: SqliteEngine) -> Union[int, float]:
+def update_usr_points(usr: Union[discord.User, discord.Member], update_val: Union[int, float], engine: SqliteEngine) -> \
+Union[int, float]:
     """
     Attempts to update the number of points a user has.
     If the user has no points, an entry is created for that user.
@@ -47,7 +48,8 @@ def update_usr_points(usr: Union[discord.User, discord.Member], update_val: Unio
     return new_pts
 
 
-def set_points(usr: Union[discord.User, discord.Member], points: Union[int, float], engine: SqliteEngine) -> Union[int, float]:
+def set_points(usr: Union[discord.User, discord.Member], points: Union[int, float], engine: SqliteEngine) -> Union[
+    int, float]:
     """
     Sets the number of points a user has.
     If the user has no points, an entry is created for that user.

@@ -9,6 +9,6 @@ def fmt_pts(usr_mention: str, points_num: numbers.Number) -> str:
     :return: A formatted string
     """
     if points_num == 1:
-        return f"{usr_mention} now has **{points_num}** point"
+        return f"{usr_mention} now has **{points_num:.2f}** point"
     else:
-        return f"{usr_mention} now has **{points_num}** points"
+        return f"{usr_mention} now has **{points_num:.2f}** points"
