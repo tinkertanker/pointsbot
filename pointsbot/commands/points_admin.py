@@ -24,7 +24,6 @@ class PointsAdmin(commands.Cog):
                 await ctx.respond("Pointless")
             else:
                 await ctx.respond("You can't add negative points. Use `deduct` instead.")
-            await ctx.delete(delay=5)
             return
         usr: discord.Member = user
         new_pts = update_usr_points(user, points, self.bot.db)
@@ -51,7 +50,6 @@ class PointsAdmin(commands.Cog):
                 await ctx.respond("Pointless")
             else:
                 await ctx.respond("You can't deduct negative points. Use `add` instead.")
-            await ctx.delete(delay=5)
             return
         usr: discord.Member = user
         new_pts = update_usr_points(user, -points, self.bot.db)
