@@ -35,6 +35,17 @@ class PointsBot(discord.Bot):
             user_id INTEGER PRIMARY KEY
         );
         """))
+        self.db.cur.execute(("""
+        CREATE TABLE IF NOT EXISTS history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            user_display_name VARCHAR(255) NOT NULL,
+            server_id INTEGER NOT NULL,
+            points_delta INTEGER NOT NULL,
+            previous_value INTEGER NOT NULL,
+            timestamp DATETIME NOT NULL
+        );
+        """))
         self.db.conn.commit()
 
     def _setup_logging(self):
