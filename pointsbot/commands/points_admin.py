@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from pointsbot import PointsBot
 from pointsbot.commands import fmt_pts, fmt_spread_pts, fmt_update_pts
-from pointsbot.database import update_usr_points, set_usr_points
+from pointsbot.database import update_usr_points, set_usr_points, reset_all, SqliteEngine
 
 
 class PointsAdmin(commands.Cog):
@@ -134,6 +134,26 @@ class PointsAdmin(commands.Cog):
         :return: None
         """
         await self.set_points(ctx, user, points)
+
+    @points_admin.command(name="reset", description="Resets ALL points in the server")
+    async def reset_server(self, ctx: discord.ApplicationContext):
+        class View(discord.ui.View):
+            def __init__(self, db_engine: SqliteEngine, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.db = db_engine
+
+            @discord.ui.button(label="Yes", style=discord.ButtonStyle.danger)
+            async def yes(self, btn: discord.ui.Button, interaction: discord.Interaction):
+                self.disable_all_items()
+                reset_all(interaction.guild, self.db)
+                await interaction.response.edit_message(content="Ok. Resetting all points to 0", view=self)
+
+            @discord.ui.button(label="No", style=discord.ButtonStyle.secondary)
+            async def no(self, btn: discord.ui.Button, interaction: discord.Interaction):
+                self.disable_all_items()
+                await interaction.response.edit_message(content="Reset cancelled", view=self)
+
+        await ctx.respond("Are you sure you want to reset ALL points in this server?", view=View(self.bot.db))
 
     @points_admin.command(name='debug', description="Temporary debug command")
     async def debug(self, ctx: discord.ApplicationContext,

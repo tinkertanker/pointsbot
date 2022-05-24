@@ -77,6 +77,19 @@ def set_usr_points(usr: discord.Member,
     return points
 
 
+def reset_all(server: Union[discord.Guild, int], engine: SqliteEngine):
+    """
+    Resets ALL points in a server to 0.
+
+    :param server: The guild to reset the points for
+    :param engine: The DB engine to use
+    :return: None
+    """
+    guild_id = server.id if isinstance(server, discord.Guild) else server
+    engine.cur.execute("UPDATE points SET points = 0 WHERE server_id = ?", (guild_id,))
+    engine.conn.commit()
+
+
 def fetch_top_n_users(server: Union[discord.Guild, int], engine: SqliteEngine, n=10) -> Optional[list[tuple]]:
     """
     Fetches the top N users, ordering by the number of points they have.
