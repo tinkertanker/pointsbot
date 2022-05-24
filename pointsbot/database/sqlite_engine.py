@@ -1,4 +1,5 @@
 import sqlite3
+from pathlib import Path
 
 
 class SqliteEngine:
@@ -33,6 +34,16 @@ class SqliteEngine:
         if not self._connection:
             self.connect()
         return self._cursor
+
+    def exec_script(self, script_path: Path):
+        """
+        Executes a script file
+        :param script_path: The path to the script file
+        :return: None
+        """
+        with open(script_path, "r") as f:
+            self.cur.executescript(f.read())
+        self.conn.commit()
 
     def close_connection(self):
         """

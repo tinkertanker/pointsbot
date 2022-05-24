@@ -17,6 +17,7 @@ class PointsAdmin(commands.Cog):
     async def spread(self, ctx: discord.ApplicationContext, role: Optional[discord.Role], pts: Union[int, float]):
         """
         Spreads the points, and also throws some useful responses
+
         :param ctx: The application context
         :param role: The role to spread the points to
         :param pts: The number of points to spread
@@ -36,6 +37,7 @@ class PointsAdmin(commands.Cog):
                             delta: Union[int, float]):
         """
         Updates the points of a user
+
         :param ctx: The application context
         :param user: The user to update
         :param delta: The number of points to update by

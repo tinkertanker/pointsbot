@@ -1,6 +1,9 @@
 import logging
 
 # noinspection PyPackageRequirements
+import os.path
+from pathlib import Path
+
 import discord
 
 from pointsbot.database import SqliteEngine
@@ -22,31 +25,8 @@ class PointsBot(discord.Bot):
 
     def _setup_database(self, db_engine: SqliteEngine):
         self.db = db_engine
-        self.db.cur.executescript(
-            """
-            CREATE TABLE IF NOT EXISTS points (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                user_display_name VARCHAR(255) NOT NULL,
-                server_id INTEGER NOT NULL,
-                points INTEGER NOT NULL DEFAULT 0
-            );
-            CREATE TABLE IF NOT EXISTS administrators (
-                user_id INTEGER PRIMARY KEY
-            );
-            CREATE TABLE IF NOT EXISTS history (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                user_display_name VARCHAR(255) NOT NULL,
-                server_id INTEGER NOT NULL,
-                points_delta INTEGER NOT NULL,
-                previous_value INTEGER NOT NULL,
-                modifier_id INTEGER NOT NULL,
-                modifier_display_name VARCHAR(255) NOT NULL,
-                timestamp DATETIME NOT NULL
-            );
-            """
-        )
+        here = os.path.dirname(os.path.abspath(__file__))
+        self.db.exec_script(Path(here).parents[0] / 'db.sql')
         self.db.conn.commit()
 
     def _setup_logging(self):
