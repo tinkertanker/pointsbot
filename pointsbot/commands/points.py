@@ -24,7 +24,7 @@ class Points(commands.Cog):
         :return: The number of points you have
         """
         points = fetch_points(ctx.author, self.bot.db)
-        await ctx.respond(fmt_pts(ctx.author.mention, points))
+        await ctx.respond(fmt_pts(ctx.author.mention, points), ephemeral=True)
 
     @points.command(name="get", description="Retrieves the points of another user")
     async def points_get(self, ctx: discord.ApplicationContext,

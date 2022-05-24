@@ -23,11 +23,9 @@ class PointsAdmin(commands.Cog):
         :return: None
         """
         if role is None:
-            await ctx.respond("That role doesn't exist!")
-            return
+            await ctx.respond("That role doesn't exist!", ephemeral=True)
         if len(role.members) == 0:
-            await ctx.respond("Can't give out points to 0 people...")
-            return
+            await ctx.respond("Can't give out points to 0 people...", ephimeral=True)
         pts_per_usr = pts / len(role.members)
         for member in role.members:
             update_usr_points(member, pts_per_usr, self.bot.db)
@@ -44,10 +42,20 @@ class PointsAdmin(commands.Cog):
         :return: None
         """
         if delta == 0:
-            await ctx.respond("That is pointless...")
-            return
+            await ctx.respond("That is pointless...", ephemeral=True)
         new_pts = update_usr_points(user, delta, self.bot.db)
         await ctx.respond(fmt_update_pts(user.mention, delta, new_pts))
+
+    async def set_points(self, ctx: discord.ApplicationContext, user: discord.Member, pts: Union[int, float]):
+        """
+        Sets the point of a user
+        :param ctx: The application context
+        :param user: The user to set the points of
+        :param pts: The number of points to set
+        :return: None
+        """
+        set_usr_points(user, pts, self.bot.db)
+        await ctx.respond(fmt_pts(user.mention, pts))
 
     points_admin = discord.SlashCommandGroup("padmin", "Points administration commands")
 
@@ -58,8 +66,7 @@ class PointsAdmin(commands.Cog):
                          points: discord.Option(discord.SlashCommandOptionType.number,
                                                 "The number of points to spread")):
         if points < 0:
-            await ctx.respond("Use `spread_deduct` instead.")
-            return
+            await ctx.respond("Use `spread_deduct` instead. Processing anyway", ephemeral=True)
 
         await self.spread(ctx, role, points)
 
@@ -71,8 +78,7 @@ class PointsAdmin(commands.Cog):
                             points: discord.Option(discord.SlashCommandOptionType.number,
                                                    "The number of points to spread deduct")):
         if points < 0:
-            await ctx.respond("Use `spread_add` instead.")
-            return
+            await ctx.respond("Use `spread_add` instead. Processing anyway", ephemeral=True)
         await self.spread(ctx, role, -points)
 
     @points_admin.command(name="add", description="Adds points to a user")
@@ -90,8 +96,8 @@ class PointsAdmin(commands.Cog):
         :return: None
         """
         if points < 0:
-            await ctx.respond("Use the `deduct` command instead.")
-            return
+            await ctx.respond("Note: This should be accomplished with the `deduct` command instead. "
+                              "Processing anyway...", ephemeral=True)
         await self.update_points(ctx, user, points)
 
     @points_admin.command(name="deduct", description="Deducts points from a user")
@@ -109,8 +115,8 @@ class PointsAdmin(commands.Cog):
         :return: None
         """
         if points < 0:
-            await ctx.respond("Use the `add` command instead.")
-            return
+            await ctx.respond("Note: This should be accomplished with the `add` command instead. Processing anyway...")
+            await ctx.delete(delay=5)
         await self.update_points(ctx, user, -points)
 
     @points_admin.command(name="set", description="Sets the points of a user")
