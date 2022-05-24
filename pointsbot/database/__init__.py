@@ -1,3 +1,4 @@
+import numbers
 from typing import Optional
 
 import discord
@@ -5,7 +6,7 @@ import discord
 from .sqlite_engine import SqliteEngine
 
 
-def fmt_pts(usr_mention: str, points_num: int) -> str:
+def fmt_pts(usr_mention: str, points_num: numbers.Number) -> str:
     """
     Formats the point result output for printing
     :param points_num: the number of points
@@ -18,7 +19,7 @@ def fmt_pts(usr_mention: str, points_num: int) -> str:
         return f"{usr_mention} now has **{points_num}** points"
 
 
-def fetch_points(usr: discord.User, engine: SqliteEngine) -> int:
+def fetch_points(usr: discord.User, engine: SqliteEngine) -> numbers.Number:
     """
     Attempts to the fetch the number of points a user has.
     If the user has no points, 0 is returned, and a database entry is created.
@@ -38,7 +39,7 @@ def fetch_points(usr: discord.User, engine: SqliteEngine) -> int:
     return results[0]
 
 
-def update_usr_points(usr: discord.User, update_val: int, engine: SqliteEngine) -> int:
+def update_usr_points(usr: discord.User, update_val: numbers.Number, engine: SqliteEngine) -> numbers.Number:
     """
     Attempts to update the number of points a user has.
     If the user has no points, an entry is created for that user.
@@ -59,7 +60,7 @@ def update_usr_points(usr: discord.User, update_val: int, engine: SqliteEngine) 
     return new_pts
 
 
-def set_points(usr: discord.User, points: int, engine: SqliteEngine) -> int:
+def set_points(usr: discord.User, points: numbers.Number, engine: SqliteEngine) -> numbers.Number:
     """
     Sets the number of points a user has.
     If the user has no points, an entry is created for that user.
