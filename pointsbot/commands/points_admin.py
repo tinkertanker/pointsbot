@@ -49,60 +49,6 @@ class PointsAdmin(commands.Cog):
         new_pts = update_usr_points(user, delta, self.bot.db)
         await ctx.respond(fmt_update_pts(user.mention, delta, new_pts))
 
-    @commands.slash_command(name="padd", description="Adds points to a user")
-    async def points_add(self, ctx: discord.ApplicationContext,
-                         user: discord.Option(discord.SlashCommandOptionType.user,
-                                              "The user to add points to"),
-                         points: discord.Option(discord.SlashCommandOptionType.number,
-                                                "The number of points to add",
-                                                default=1)):
-        """
-        Adds points to a user
-        :param ctx: The application context
-        :param user: The user to add points to
-        :param points: The number of points to add
-        :return: None
-        """
-        if points < 0:
-            await ctx.respond("Use the `deduct` command instead.")
-            return
-        await self.update_points(ctx, user, points)
-
-    @commands.slash_command(name="pdeduct", description="Deducts points from a user")
-    async def points_deduct(self, ctx: discord.ApplicationContext,
-                            user: discord.Option(discord.SlashCommandOptionType.user,
-                                                 "The user to deduct points from"),
-                            points: discord.Option(discord.SlashCommandOptionType.number,
-                                                   "The number of points to deduct",
-                                                   default=1)):
-        """
-        Deducts points from a user
-        :param ctx: The application context
-        :param user: The user to deduct points from
-        :param points: The number of points to deduct
-        :return: None
-        """
-        if points > 0:
-            await ctx.respond("Use the `add` command instead.")
-            return
-        await self.update_points(ctx, user, -points)
-
-    @commands.slash_command(name="pset", description="Sets the points of a user")
-    async def points_set(self, ctx: discord.ApplicationContext,
-                         user: discord.Option(discord.SlashCommandOptionType.user,
-                                              "The user to set points for"),
-                         points: discord.Option(discord.SlashCommandOptionType.number,
-                                                "The number of points to set",
-                                                default=1)):
-        """
-        Sets the points of a user
-        :param ctx: The application context
-        :param user: The user to set points for
-        :param points: The number of points to set
-        :return: None
-        """
-        await self.set_points(ctx, user, points)
-
     points_admin = discord.SlashCommandGroup("padmin", "Points administration commands")
 
     @points_admin.command(name='spread_add', description='Evenly distributes points for users in a role')
@@ -128,6 +74,60 @@ class PointsAdmin(commands.Cog):
             await ctx.respond("Use `spread_add` instead.")
             return
         await self.spread(ctx, role, -points)
+
+    @points_admin.command(name="add", description="Adds points to a user")
+    async def points_add(self, ctx: discord.ApplicationContext,
+                         user: discord.Option(discord.SlashCommandOptionType.user,
+                                              "The user to add points to"),
+                         points: discord.Option(discord.SlashCommandOptionType.number,
+                                                "The number of points to add",
+                                                default=1)):
+        """
+        Adds points to a user
+        :param ctx: The application context
+        :param user: The user to add points to
+        :param points: The number of points to add
+        :return: None
+        """
+        if points < 0:
+            await ctx.respond("Use the `deduct` command instead.")
+            return
+        await self.update_points(ctx, user, points)
+
+    @points_admin.command(name="deduct", description="Deducts points from a user")
+    async def points_deduct(self, ctx: discord.ApplicationContext,
+                            user: discord.Option(discord.SlashCommandOptionType.user,
+                                                 "The user to deduct points from"),
+                            points: discord.Option(discord.SlashCommandOptionType.number,
+                                                   "The number of points to deduct",
+                                                   default=1)):
+        """
+        Deducts points from a user
+        :param ctx: The application context
+        :param user: The user to deduct points from
+        :param points: The number of points to deduct
+        :return: None
+        """
+        if points < 0:
+            await ctx.respond("Use the `add` command instead.")
+            return
+        await self.update_points(ctx, user, -points)
+
+    @points_admin.command(name="set", description="Sets the points of a user")
+    async def points_set(self, ctx: discord.ApplicationContext,
+                         user: discord.Option(discord.SlashCommandOptionType.user,
+                                              "The user to set points for"),
+                         points: discord.Option(discord.SlashCommandOptionType.number,
+                                                "The number of points to set",
+                                                default=1)):
+        """
+        Sets the points of a user
+        :param ctx: The application context
+        :param user: The user to set points for
+        :param points: The number of points to set
+        :return: None
+        """
+        await self.set_points(ctx, user, points)
 
     @points_admin.command(name='debug', description="Temporary debug command")
     async def debug(self, ctx: discord.ApplicationContext,

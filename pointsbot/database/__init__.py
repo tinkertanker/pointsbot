@@ -15,7 +15,7 @@ def fetch_points(usr: discord.Member, engine: SqliteEngine) -> Union[int, float]
     :param engine: Database engine
     :return: The number of points the user has
     """
-    cur = engine.cur()
+    cur = engine.cur
 
     results = cur.execute("SELECT points FROM points "
                           "WHERE user_id = ? AND server_id = ?",
@@ -24,7 +24,7 @@ def fetch_points(usr: discord.Member, engine: SqliteEngine) -> Union[int, float]
         cur.execute("INSERT INTO points (user_id, server_id, user_display_name, points) "
                     "VALUES (?, ?, ?, ?)",
                     (usr.id, usr.guild.id, str(usr), 0))
-        engine.conn().commit()
+        engine.conn.commit()
         return 0
 
     return results[0]
@@ -45,12 +45,12 @@ def update_usr_points(usr: discord.Member,
     :param update_val: The amount to update the points by
     :return: The points the user now has
     """
-    cur = engine.cur()
+    cur = engine.cur
     curr_pts = fetch_points(usr, engine)  # runs 1 or 2 queries
     new_pts = curr_pts + update_val
     cur.execute("UPDATE points SET points = ? "
                 "WHERE user_id = ? AND server_id = ?", (new_pts, usr.id, usr.guild.id))
-    engine.conn().commit()
+    engine.conn.commit()
     return new_pts
 
 
@@ -69,11 +69,11 @@ def set_usr_points(usr: discord.Member,
     :param points: The number of points to set
     :return: The points the user now has
     """
-    cur = engine.cur()
+    cur = engine.cur
     fetch_points(usr, engine)  # runs 1 or 2 queries
     cur.execute("UPDATE points SET points = ? "
                 "WHERE user_id = ? AND server_id = ?", (points, usr.id, usr.guild.id))
-    engine.conn().commit()
+    engine.conn.commit()
     return points
 
 
@@ -86,10 +86,10 @@ def fetch_top_n_users(server: Union[discord.Guild, int], engine: SqliteEngine, n
     :return: list of (user_display_name, points) tuples, or none if there are no users
     """
     guild_id = server.id if isinstance(server, discord.Guild) else server
-    top_n = engine.cur().execute("SELECT user_display_name, points FROM points "
-                                 "WHERE server_id = ? "
-                                 "ORDER BY points DESC LIMIT ?",
-                                 (guild_id, n)).fetchall()
+    top_n = engine.cur.execute("SELECT user_display_name, points FROM points "
+                               "WHERE server_id = ? "
+                               "ORDER BY points DESC LIMIT ?",
+                               (guild_id, n)).fetchall()
     if top_n is None or len(top_n) == 0:
         return
     return top_n

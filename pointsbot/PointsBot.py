@@ -22,7 +22,7 @@ class PointsBot(discord.Bot):
 
     def _setup_database(self, db_engine: SqliteEngine):
         self.db = db_engine
-        self.db.cur().execute(("""
+        self.db.cur.execute(("""
         CREATE TABLE IF NOT EXISTS points (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -30,12 +30,12 @@ class PointsBot(discord.Bot):
             server_id INTEGER NOT NULL,
             points INTEGER NOT NULL DEFAULT 0
         );"""))
-        self.db.cur().execute(("""
+        self.db.cur.execute(("""
         CREATE TABLE IF NOT EXISTS administrators (
             user_id INTEGER PRIMARY KEY
         );
         """))
-        self.db.conn().commit()
+        self.db.conn.commit()
 
     def _setup_logging(self):
         self.logger = logging.getLogger('pointsbot')

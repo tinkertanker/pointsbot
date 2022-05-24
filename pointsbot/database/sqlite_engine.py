@@ -15,6 +15,7 @@ class SqliteEngine:
         self._connection = sqlite3.connect(self.db_loc)
         self._cursor = self._connection.cursor()
 
+    @property
     def conn(self) -> sqlite3.Connection:
         """
         Returns the connection
@@ -23,6 +24,7 @@ class SqliteEngine:
         """
         return self._connection
 
+    @property
     def cur(self) -> sqlite3.Cursor:
         """
         Returns the cursor
