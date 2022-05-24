@@ -51,7 +51,7 @@ class Points(commands.Cog):
         if not top_users:
             await ctx.respond("There are no users with points.")
             return
-        await ctx.respond(embed=gen_leaderboard_embed(top_users))
+        await ctx.respond("Leaderboard computed", embed=gen_leaderboard_embed(top_users))
 
 
 def gen_leaderboard_embed(top_users: list[tuple]) -> discord.Embed:
