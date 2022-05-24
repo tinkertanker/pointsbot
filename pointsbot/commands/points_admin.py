@@ -55,6 +55,32 @@ class PointsAdmin(commands.Cog):
         new_pts = update_usr_points(user, -points, self.bot.db)
         await ctx.respond(f"{fmt_pts(usr.mention, new_pts)} [-{points}]")
 
+    @points_admin.command(name='spread', description='Evenly distributes points for users in a role')
+    async def spread(self, ctx: discord.ApplicationContext,
+                     role: discord.Option(discord.SlashCommandOptionType.role,
+                                          "The role to spread the points amongst"),
+                     points: discord.Option(discord.SlashCommandOptionType.integer,
+                                            "The number of points to spread")):
+
+        the_role = ctx.guild.get_role(role.id)
+        if the_role is None:
+            await ctx.respond("That role doesn't exist!")
+            return
+
+        if len(the_role.members) == 0:
+            await ctx.respond("Can't give out points to 0 people...")
+            return
+
+        if abs(points) < len(the_role.members):
+            await ctx.respond("You can't even give one point to everyone! What a grinch.")
+            return
+
+        pts_per_usr = points / len(the_role.members)
+        for member in the_role.members:
+            update_usr_points(member, pts_per_usr, self.bot.db)
+        await ctx.respond(f"Evenly distributed {points} points to {len(the_role.members)} users in {the_role.mention} "
+                          f"(each user has received: {pts_per_usr} points)")
+
 
 def setup(bot: PointsBot):
     bot.add_cog(PointsAdmin(bot))
