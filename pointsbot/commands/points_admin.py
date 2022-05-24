@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 
 from pointsbot import PointsBot
-from pointsbot.commands import fmt_pts, fetch_points, update_usr_points
+from pointsbot.commands import fmt_pts
+from pointsbot.database import fetch_points, update_usr_points
 
 
 class PointsAdmin(commands.Cog):

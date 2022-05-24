@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 
 from pointsbot import PointsBot
-from pointsbot.database import fmt_pts, fetch_points, fetch_top_n_users
+from pointsbot.commands import fmt_pts
+from pointsbot.database import fetch_points, fetch_top_n_users
 
 import time
 

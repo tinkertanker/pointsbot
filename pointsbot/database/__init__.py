@@ -6,19 +6,6 @@ import discord
 from .sqlite_engine import SqliteEngine
 
 
-def fmt_pts(usr_mention: str, points_num: numbers.Number) -> str:
-    """
-    Formats the point result output for printing
-    :param points_num: the number of points
-    :param usr_mention: the mention
-    :return: A formatted string
-    """
-    if points_num == 1:
-        return f"{usr_mention} now has **{points_num}** point"
-    else:
-        return f"{usr_mention} now has **{points_num}** points"
-
-
 def fetch_points(usr: discord.User, engine: SqliteEngine) -> numbers.Number:
     """
     Attempts to the fetch the number of points a user has.
