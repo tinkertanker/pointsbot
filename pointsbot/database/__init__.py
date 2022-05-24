@@ -43,7 +43,7 @@ def update_usr_points(usr: discord.Member,
     :param engine: The DB engine to use
     :param usr: The user
     :param update_val: The amount to update the points by
-    :return: The updated points
+    :return: The points the user now has
     """
     cur = engine.cur()
     curr_pts = fetch_points(usr, engine)  # runs 1 or 2 queries
@@ -54,9 +54,9 @@ def update_usr_points(usr: discord.Member,
     return new_pts
 
 
-def set_points(usr: discord.Member,
-               points: Union[int, float],
-               engine: SqliteEngine) -> Union[int, float]:
+def set_usr_points(usr: discord.Member,
+                   points: Union[int, float],
+                   engine: SqliteEngine) -> Union[int, float]:
     """
     Sets the number of points a user has.
     If the user has no points, an entry is created for that user.
