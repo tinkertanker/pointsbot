@@ -1,12 +1,12 @@
 import numbers
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 
 from .sqlite_engine import SqliteEngine
 
 
-def fetch_points(usr: discord.User, engine: SqliteEngine) -> numbers.Number:
+def fetch_points(usr: discord.User, engine: SqliteEngine) -> Union[int, float]:
     """
     Attempts to the fetch the number of points a user has.
     If the user has no points, 0 is returned, and a database entry is created.
@@ -26,7 +26,7 @@ def fetch_points(usr: discord.User, engine: SqliteEngine) -> numbers.Number:
     return results[0]
 
 
-def update_usr_points(usr: discord.User, update_val: numbers.Number, engine: SqliteEngine) -> numbers.Number:
+def update_usr_points(usr: discord.User, update_val: Union[int, float], engine: SqliteEngine) -> Union[int, float]:
     """
     Attempts to update the number of points a user has.
     If the user has no points, an entry is created for that user.
@@ -47,7 +47,7 @@ def update_usr_points(usr: discord.User, update_val: numbers.Number, engine: Sql
     return new_pts
 
 
-def set_points(usr: discord.User, points: numbers.Number, engine: SqliteEngine) -> numbers.Number:
+def set_points(usr: discord.User, points: Union[int, float], engine: SqliteEngine) -> Union[int, float]:
     """
     Sets the number of points a user has.
     If the user has no points, an entry is created for that user.
