@@ -47,7 +47,7 @@ class Points(commands.Cog):
         :param ctx:
         :return:
         """
-        top_users = fetch_top_n_users(self.bot.db)
+        top_users = fetch_top_n_users(ctx.guild, self.bot.db)
         if not top_users:
             await ctx.respond("There are no users with points.")
             return

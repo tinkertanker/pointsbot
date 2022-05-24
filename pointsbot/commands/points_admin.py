@@ -83,6 +83,11 @@ class PointsAdmin(commands.Cog):
         await ctx.respond(f"Evenly distributed {points} points to {len(the_role.members)} users in {the_role.mention} "
                           f"(each user has received: {pts_per_usr:.2f} points)")
 
+    @points_admin.command(name='debug', description="Temporary debug command")
+    async def debug(self, ctx: discord.ApplicationContext,
+                    member: discord.Option(discord.SlashCommandOptionType.user, "The user")):
+        await ctx.respond(f"member is type member?: {isinstance(member, discord.Member)}")
+
 
 def setup(bot: PointsBot):
     bot.add_cog(PointsAdmin(bot))

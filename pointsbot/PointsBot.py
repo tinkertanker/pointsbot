@@ -1,4 +1,3 @@
-# noinspection PyPackageRequirements
 import logging
 
 # noinspection PyPackageRequirements
@@ -25,8 +24,10 @@ class PointsBot(discord.Bot):
         self.db = db_engine
         self.db.cur().execute(("""
         CREATE TABLE IF NOT EXISTS points (
-            user_id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
             user_display_name VARCHAR(255) NOT NULL,
+            server_id INTEGER NOT NULL,
             points INTEGER NOT NULL DEFAULT 0
         );"""))
         self.db.cur().execute(("""
