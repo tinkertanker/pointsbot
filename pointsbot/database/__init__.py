@@ -8,7 +8,9 @@ import discord
 from .sqlite_engine import SqliteEngine
 
 
-def track(usr: discord.Member, previous_points: Union[int, float], points_delta: Union[int, float], executor: discord.Member, engine: SqliteEngine):
+def track(usr: discord.Member, previous_points: Union[int, float],
+          points_delta: Union[int, float],
+          executor: discord.Member, engine: SqliteEngine):
     """
     Tracks a point change in the database history
 
