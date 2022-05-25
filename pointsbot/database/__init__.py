@@ -97,7 +97,7 @@ def update_usr_points(usr: discord.Member,
 
 
 def set_usr_points(usr: discord.Member,
-                     executor: discord.Member,
+                   executor: discord.Member,
                    points: Union[int, float],
                    engine: SqliteEngine) -> Union[int, float]:
     """
