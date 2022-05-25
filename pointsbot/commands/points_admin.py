@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from pointsbot import PointsBot
 from pointsbot.commands import fmt_pts, fmt_spread_pts, fmt_update_pts
-from pointsbot.database import update_usr_points, set_usr_points, reset_all, SqliteEngine
+from pointsbot.database import update_usr_points, set_usr_points, reset_all, SqliteEngine, track
 
 
 class PointsAdmin(commands.Cog):
@@ -29,7 +29,7 @@ class PointsAdmin(commands.Cog):
             await ctx.respond("Can't give out points to 0 people...", ephimeral=True)
         pts_per_usr = pts / len(role.members)
         for member in role.members:
-            update_usr_points(member, pts_per_usr, self.bot.db)
+            update_usr_points(member, ctx.user, pts_per_usr, self.bot.db)
         await ctx.respond(fmt_spread_pts(role, pts))
 
     async def update_points(self, ctx: discord.ApplicationContext,
@@ -45,7 +45,7 @@ class PointsAdmin(commands.Cog):
         """
         if delta == 0:
             await ctx.respond("That is pointless...", ephemeral=True)
-        new_pts = update_usr_points(user, delta, self.bot.db)
+        new_pts = update_usr_points(user, ctx.user, delta, self.bot.db)
         await ctx.respond(fmt_update_pts(user.mention, delta, new_pts))
 
     async def set_points(self, ctx: discord.ApplicationContext, user: discord.Member, pts: Union[int, float]):
@@ -56,7 +56,7 @@ class PointsAdmin(commands.Cog):
         :param pts: The number of points to set
         :return: None
         """
-        set_usr_points(user, pts, self.bot.db)
+        set_usr_points(user, ctx.user, pts, self.bot.db)
         await ctx.respond(fmt_pts(user.mention, pts))
 
     points_admin = discord.SlashCommandGroup("padmin", "Points administration commands")
