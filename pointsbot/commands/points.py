@@ -5,7 +5,7 @@ from discord.ext import commands
 
 from pointsbot import PointsBot
 from pointsbot.commands import fmt_pts
-from pointsbot.database import fetch_points, fetch_top_n_users, fetch_history
+from pointsbot.database import fetch_points, fetch_top_n_users, fetch_history, HistoryEntry
 
 import time
 
@@ -39,15 +39,15 @@ class Points(commands.Cog):
         :return: The history of all your points changes
         """
 
-        def fmt_history(history: list[tuple]):
+        def fmt_history(history: list[HistoryEntry]):
             storage = []
             for entry in history:
                 # very awful, should've used an ORM
-                disp_name = entry[2]
-                points_delta = entry[5]
-                previous_value = entry[6]
-                modifier_disp_name = entry[7]
-                timestamp = entry[8]  # note: utc
+                disp_name = entry.user_display_name
+                points_delta = entry.points_delta
+                previous_value = entry.previous_value
+                modifier_disp_name = entry.modifier_display_name
+                timestamp = entry.utc_timestamp
                 fmt_string = f"* {disp_name}'s points changed by {points_delta:.2f} from {previous_value:.2f} " \
                              f"by {modifier_disp_name} at <t:{timestamp}>"
                 storage.append(fmt_string)
@@ -61,7 +61,7 @@ class Points(commands.Cog):
             else:
                 await ctx.respond(f"{str(usr)} has no points history...", ephemeral=True)
             return
-        print(hist)
+        # print(hist)
         await ctx.respond(fmt_history(hist), ephemeral=True)
 
     @points.command(name="get", description="Retrieves the points of another user")

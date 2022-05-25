@@ -1,5 +1,6 @@
 import datetime
 import time
+from collections import namedtuple
 from typing import Optional, Union
 
 # noinspection PyPackageRequirements
@@ -45,7 +46,19 @@ def track(usr: discord.Member, previous_points: Union[int, float],
     engine.conn.commit()
 
 
-def fetch_history(usr: discord.Member, engine: SqliteEngine) -> Optional[list[tuple]]:
+HistoryEntry = namedtuple('HistoryEntry',
+                          ['database_id',
+                           'user_id',
+                           'user_display_name',
+                           'server_id',
+                           'points_delta',
+                           'previous_value',
+                           'modifier_id',
+                           'modifier_display_name',
+                           'utc_timestamp'])
+
+
+def fetch_history(usr: discord.Member, engine: SqliteEngine) -> Optional[list[HistoryEntry]]:
     """
     Fetches the history of a user.
 
@@ -54,20 +67,16 @@ def fetch_history(usr: discord.Member, engine: SqliteEngine) -> Optional[list[tu
     :return: The history of the user.
      None if the user has no history (or history has been reset).
      If the user has a history, it is returned as a list of tuples.
-     The tuple can be destructured as follows:
-     database_id, user_id, user_display_name,
-      server_id, points_delta, previous_value,
-       modifier_id, modifier_display_name, timestamp
 
-    :rtype: Optional[list[tuple]]
     """
     cur = engine.cur
     results = cur.execute("SELECT * FROM history "
                           "WHERE user_id = ? AND server_id = ? "
                           "ORDER BY timestamp DESC",
                           (usr.id, usr.guild.id)).fetchall()
+
     if results or len(results) > 0:
-        return results
+        return [HistoryEntry(*row) for row in results]
     return None
 
 
