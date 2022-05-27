@@ -24,6 +24,7 @@ class Points(commands.Cog):
         :return: The number of points you have
         """
         if not isinstance(ctx.author, discord.Member):
+            self.bot.logger.info(f"User {ctx.author} is not a member! Weird!")
             await ctx.respond("Cannot process this command", ephemeral=True)
             return
         points = fetch_points(ctx.author, self.bot.db)
@@ -64,7 +65,6 @@ class Points(commands.Cog):
             else:
                 await ctx.respond(f"{str(usr)} has no points history...", ephemeral=True)
             return
-        # print(hist)
         await ctx.respond(fmt_history(hist), ephemeral=True)
 
     @points.command(name="get", description="Retrieves the points of another user")
