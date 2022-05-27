@@ -23,6 +23,9 @@ class Points(commands.Cog):
         :param ctx: The application context
         :return: The number of points you have
         """
+        if not isinstance(ctx.author, discord.Member):
+            await ctx.respond("Cannot process this command", ephemeral=True)
+            return
         points = fetch_points(ctx.author, self.bot.db)
         await ctx.respond(fmt_pts(ctx.author.mention, points), ephemeral=True)
 
@@ -53,7 +56,7 @@ class Points(commands.Cog):
                 storage.append(fmt_string)
             return "\n".join(storage)
 
-        usr = user or ctx.author
+        usr: discord.Member = user or ctx.author
         hist = fetch_history(usr, self.bot.db)
         if not hist or len(hist) == 0:
             if usr is ctx.author:
@@ -84,9 +87,14 @@ class Points(commands.Cog):
                                                            "The number of users to retrieve", default=10)):
         """
         Retrieves the top N users with the most points
-        :param num_users: The number of users to retrieve
-        :param ctx: The application context
-        :return:
+
+        Args:
+            ctx: The application context
+            num_users: The number of users to retrieve
+
+        Returns:
+              None
+
         """
         if num_users < 1:
             await ctx.respond("Nope. That's LITERALLY impossible.", ephemeral=True)

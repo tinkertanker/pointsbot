@@ -4,7 +4,7 @@ import discord
 import numbers
 
 
-def fmt_pts(usr_mention: str, points_num: numbers.Number) -> str:
+def fmt_pts(usr_mention: str, points_num: Union[float, int]) -> str:
     """
     Formats the point result output for printing
 
@@ -16,7 +16,7 @@ def fmt_pts(usr_mention: str, points_num: numbers.Number) -> str:
     return f"{usr_mention} now has **{points_num:.2f}** point{plural}."
 
 
-def fmt_update_pts(usr_mention: str, delta: Union[int, float], new_pts: numbers.Number) -> str:
+def fmt_update_pts(usr_mention: str, delta: Union[float, int], new_pts: Union[float, int]) -> str:
     """
     Formats the point update result output for printing
 
@@ -30,7 +30,7 @@ def fmt_update_pts(usr_mention: str, delta: Union[int, float], new_pts: numbers.
            f"({sign}{abs(delta):.2f})"
 
 
-def fmt_spread_pts(role: discord.Role, total_pts: Union[int, float]) -> str:
+def fmt_spread_pts(role: discord.Role, total_pts: Union[float, int]) -> str:
     """
     Formats the point spread result output for printing
     Note that this assumes the spread is even.

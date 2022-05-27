@@ -186,5 +186,5 @@ def fetch_top_n_users(server: Union[discord.Guild, int], engine: SqliteEngine, n
                                "ORDER BY points DESC LIMIT ?",
                                (guild_id, n)).fetchall()
     if top_n is None or len(top_n) == 0:
-        return
+        return None
     return top_n

@@ -25,8 +25,10 @@ class PointsAdmin(commands.Cog):
         """
         if role is None:
             await ctx.respond("That role doesn't exist!", ephemeral=True)
+            return
         if len(role.members) == 0:
             await ctx.respond("Can't give out points to 0 people...", ephimeral=True)
+            return
         pts_per_usr = pts / len(role.members)
         for member in role.members:
             update_usr_points(member, ctx.user, pts_per_usr, self.bot.db)

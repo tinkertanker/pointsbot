@@ -23,6 +23,8 @@ class SqliteEngine:
 
         :return: The connection
         """
+        if not self._connection:
+            self.connect()
         return self._connection
 
     @property
