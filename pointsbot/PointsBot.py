@@ -19,6 +19,7 @@ class PointsBot(discord.Bot):
 
         self._setup_database(database_engine)
         self._setup_logging()
+        self.log_msg("Bot has started and should now be ready")
 
         self.load_extension('pointsbot.commands.points')
         self.load_extension('pointsbot.commands.points_admin')
@@ -39,4 +40,4 @@ class PointsBot(discord.Bot):
 
     async def on_ready(self):
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="commands"))
-        print(f'Logged on as {self.user}!')
+        self.log_msg(f'Logged on as {self.user}!')
