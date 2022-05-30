@@ -1,75 +1,49 @@
-from typing import Optional
-
+from typing import Union
+# noinspection PyPackageRequirements
 import discord
+import numbers
 
-from pointsbot.database import SqliteEngine
 
-
-def fmt_pts(usr_mention: str, points_num: int) -> str:
+def fmt_pts(usr_mention: str, points_num: Union[float, int]) -> str:
     """
     Formats the point result output for printing
+
     :param points_num: the number of points
     :param usr_mention: the mention
     :return: A formatted string
     """
-    if points_num == 1:
-        return f"{usr_mention} now has **{points_num}** point"
-    else:
-        return f"{usr_mention} now has **{points_num}** points"
+    plural = "s" if points_num != 1 else ""
+    return f"{usr_mention} now has **{points_num:.2f}** point{plural}."
 
 
-def fetch_points(usr: discord.User, engine: SqliteEngine) -> int:
+def fmt_update_pts(usr_mention: str, delta: Union[float, int], new_pts: Union[float, int]) -> str:
     """
-    Attempts to the fetch the number of points a user has.
-    If the user has no points, 0 is returned, and a database entry is created.
+    Formats the point update result output for printing
 
-    :param usr: The user
-    :param engine: Database engine
-    :return: The number of points the user has
+    :param usr_mention: the mention
+    :param delta: the delta
+    :param new_pts: the new points
+    :return: A formatted string
     """
-    cur = engine.cur()
-    results = cur.execute("SELECT points FROM points WHERE user_id = ?", (usr.id,)).fetchone()
-    if results is None:
-        cur.execute("INSERT INTO points (user_id, user_display_name, points) VALUES (?, ?, ?)",
-                    (usr.id, str(usr), 0))
-        engine.conn().commit()
-        return 0
-
-    return results[0]
+    sign = "+" if delta > 0 else "-"
+    return f"{usr_mention} now has **{new_pts:.2f}** point{'s' if new_pts != 1 else ''} " \
+           f"({sign}{abs(delta):.2f})"
 
 
-def update_usr_points(usr: discord.User, update_val: int, engine: SqliteEngine) -> int:
+def fmt_spread_pts(role: discord.Role, total_pts: Union[float, int]) -> str:
     """
-    Attempts to update the number of points a user has.
-    If the user has no points, an entry is created for that user.
+    Formats the point spread result output for printing
+    Note that this assumes the spread is even.
 
-    :param engine: The DB engine to use
-    :param usr: The user
-    :param update_val: The amount to update the points by
-    :return: The updated points
+    :param role: The role the points was spread amongst
+    :param total_pts: The total number of points distributed
+    :return: The formatted string
     """
-    cur = engine.cur()
-    curr_pts = fetch_points(usr, engine)
-    new_pts = curr_pts + update_val
-    cur.execute("UPDATE points SET points = ? WHERE user_id = ?", (new_pts, usr.id))
-    engine.conn().commit()
-    return new_pts
-
-
-def set_points(usr: discord.User, points: int, engine: SqliteEngine) -> int:
-    """
-    Sets the number of points a user has.
-    If the user has no points, an entry is created for that user.
-
-    :param engine: The DB engine to use
-    :param usr: The user
-    :param points: The number of points to set
-    :return: The points the user now has
-    """
-    cur = engine.cur()
-    fetch_points(usr, engine)
-    cur.execute("UPDATE points SET points = ? WHERE user_id = ?", (points, usr.id))
-    engine.conn().commit()
-    return points
-
-
+    n_members = len(role.members)
+    each_pts = total_pts / n_members
+    plural_pts = "s" if total_pts != 1 else ""
+    plural_members = "s" if n_members != 1 else ""
+    action = "distributed" if total_pts > 0 else "deducted"
+    sign = "+" if total_pts > 0 else "-"
+    return f"Evenly {action} **{sign}{abs(total_pts):.2f}** point{plural_pts} to **{n_members}** user{plural_members}" \
+           f" in {role.mention}. Each user received **{sign}{abs(each_pts):.2f}** points"

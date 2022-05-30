@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+    pointsbot:
+        image: tinkertanker/pointsbot:latest
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            DISCORD_TOKEN: "${DISCORD_TOKEN}"
+        restart: on-failure
+        volumes:
+            - ./:/app
